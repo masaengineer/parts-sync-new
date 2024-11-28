@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_27_170113) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_28_134942) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +60,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_27_170113) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_inventories_on_product_id"
+  end
+
+  create_table "manufacturers", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -135,6 +141,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_27_170113) do
     t.bigint "product_categories_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "manufacturer_id", null: false
+    t.index ["manufacturer_id"], name: "index_products_on_manufacturer_id"
     t.index ["product_categories_id"], name: "index_products_on_product_categories_id"
   end
 
@@ -275,6 +283,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_27_170113) do
   add_foreign_key "orders", "users"
   add_foreign_key "payment_fees", "orders"
   add_foreign_key "procurements", "orders"
+  add_foreign_key "products", "manufacturers"
   add_foreign_key "products", "product_categories", column: "product_categories_id"
   add_foreign_key "quotation_item_changes", "quotation_items"
   add_foreign_key "quotation_items", "products"

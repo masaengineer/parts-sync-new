@@ -1,0 +1,37 @@
+<div class="container mx-auto px-4 py-8">
+  <%# レポートテーブル %>
+  <div class="overflow-x-auto">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr>
+          <th>注文番号</th>
+          <th>SKU</th>
+          <th>品番</th>
+          <th>メーカー</th>
+          <th>商品名</th>
+          <th>プラットフォーム</th>
+          <th>販売価格</th>
+          <th>仕入れ価格</th>
+          <th>利益</th>
+          <th>利益率</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @report_data.each do |data| %>
+          <tr>
+            <td><%= data[:order_number] %></td>
+            <td><%= data[:sku] %></td>
+            <td><%= data[:product_number] %></td>
+            <td><%= data[:maker] %></td>
+            <td><%= data[:product_name] %></td>
+            <td><%= data[:platform] %></td>
+            <td class="text-right"><%= number_to_currency(data[:selling_price], unit: "¥") %></td>
+            <td class="text-right"><%= number_to_currency(data[:cost_price], unit: "¥") %></td>
+            <td class="text-right"><%= number_to_currency(data[:profit], unit: "¥") %></td>
+            <td class="text-right"><%= number_to_percentage(data[:profit_rate], precision: 1) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

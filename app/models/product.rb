@@ -4,6 +4,7 @@ class Product < ApplicationRecord
   has_many :skus, through: :sku_part_number_links
   has_many :inventories
   has_many :quotation_items
+  belongs_to :manufacturer
 
   validates :oem_part_number, presence: true
   validates :product_status, presence: true

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
   get "landing/index"
-  resources :tasks
+  resources :sales_reports, only: [:index]
 
   # アプリケーションのルートパスを定義
   root "landing#index"

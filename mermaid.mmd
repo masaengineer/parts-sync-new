@@ -73,6 +73,13 @@ erDiagram
         string product_status "Product status"
         datetime created_at "Product creation date"
         datetime updated_at "Product update date"
+        int manufacturer_id FK "Manufacturer table foreign key"
+    }
+
+    Manufacturers {
+        int id PK "Index"
+        string name "Manufacturer name"
+        string contact_info "Contact information"
     }
 
     Inventories {
@@ -234,3 +241,4 @@ erDiagram
     QuotationItems }o--|| Products : "product_id"
     QuotationItems ||--o{ QuotationItemChanges : "quotation_item_id"
     Orders ||--o{ OrderStatusHistory : "order_id"
+    Manufacturers ||--o{ Products : "manufacturer_id"

@@ -1,11 +1,35 @@
-# データベースをクリーンアップ
+# データベースをクリーンアップ（依存関係の逆順）
 puts "🗑️ Cleaning database..."
-[Order, Buyer, User, Product, ProductCategory, SalesChannel, Address, Sku, Inventory, OrderItem,
- OrderStatusHistory, Quotation, Remark, Sale, Shipment, Wholesaler].each(&:destroy_all)
+[
+  QuotationItemChange,
+  QuotationItem,
+  Quotation,
+  AdvertisingCost,
+  PaymentFee,
+  Procurement,
+  Shipment,
+  OrderStatusHistory,
+  OrderItem,
+  Order,
+  Inventory,
+  SkuPartNumberLink,
+  Sku,
+  Product,
+  Buyer,
+  Address,
+  User,
+  Manufacturer,
+  ProductCategory,
+  SalesChannelFee,
+  SalesChannel,
+  Wholesaler,
+  Sale,
+  Remark
+].each(&:destroy_all)
 
 # セールスチャネルの作成
 puts "🏪 Creating sales channels..."
-channels = [
+sales_channels = [
   { channel_name: "Amazon Japan", export_domestic_flag: "domestic" },
   { channel_name: "eBay", export_domestic_flag: "export" },
   { channel_name: "楽天市場", export_domestic_flag: "domestic" }
@@ -57,6 +81,14 @@ categories = [
   { category_name: "ブレーキパーツ", description: "ブレーキ関連の部品" }
 ].map { |attrs| ProductCategory.create!(attrs) }
 
+# メーカーの作成
+puts "🏭 Creating manufacturers..."
+manufacturers = [
+  { name: "Toyota" },
+  { name: "Honda" },
+  { name: "Nissan" }
+].map { |attrs| Manufacturer.create!(attrs) }
+
 # 商品の作成
 puts "📦 Creating products..."
 products = [
@@ -66,7 +98,8 @@ products = [
     domestic_title: "純正エンジンオイルフィルター",
     international_title: "Genuine Engine Oil Filter",
     product_status: "active",
-    product_categories_id: categories.first.id
+    product_categories_id: categories.first.id,
+    manufacturer: manufacturers.first
   },
   {
     oem_part_number: "XYZ789",
@@ -74,7 +107,8 @@ products = [
     domestic_title: "社外品ブレーキパッド",
     international_title: "Aftermarket Brake Pads",
     product_status: "active",
-    product_categories_id: categories.second.id
+    product_categories_id: categories.second.id,
+    manufacturer: manufacturers.second
   }
 ].map { |attrs| Product.create!(attrs) }
 
@@ -118,7 +152,7 @@ puts "📝 Creating orders..."
   order = Order.create!(
     order_number: "ORD-#{SecureRandom.hex(4).upcase}",
     sale_date: Date.today - rand(1..30),
-    sales_channel: channels.sample,
+    sales_channel: sales_channels.sample,
     user: users.sample,
     buyer: buyers.sample,
     order_status: ["pending", "processing", "shipped", "delivered"].sample
@@ -157,6 +191,87 @@ puts "📝 Creating orders..."
     partner_note: "Partner note for order #{order.order_number}",
     internal_note: "Internal note for order #{order.order_number}"
   )
+end
+
+# セールスチャネル手数料の作成
+puts "💰 Creating sales channel fees..."
+sales_channel_fees = sales_channels.map do |channel|
+  SalesChannelFee.create!(
+    sales_channel: channel,
+    fee_rate: rand(0.05..0.15)
+  )
+end
+
+# 調達の作成
+puts "📦 Creating procurements..."
+5.times do
+  Procurement.create!(
+    order: Order.all.sample,
+    purchase_price: rand(1000..50000),
+    domestic_transfer_fee: rand(100..500),
+    forwarding_fee: rand(50..200),
+    photo_fee: rand(10..50)
+  )
+end
+
+# 支払い手数料の作成
+puts "💳 Creating payment fees..."
+5.times do
+  PaymentFee.create!(
+    order: Order.all.sample,
+    fee_type: ["credit_card", "bank_transfer"].sample,
+    fee_rate: rand(0.01..0.05),
+    option: rand(1..3)
+  )
+end
+
+# 広告費用の作成
+puts "📈 Creating advertising costs..."
+5.times do
+  AdvertisingCost.create!(
+    order: Order.all.sample,
+    product_ad_cost: rand(100..1000)
+  )
+end
+
+# 卸売業者の作成
+puts "🏢 Creating wholesalers..."
+wholesalers = [
+  { name: "Wholesaler A", contact_info: "contact@wholesalera.com", address: "123 Wholesale St, Tokyo" },
+  { name: "Wholesaler B", contact_info: "contact@wholesalerb.com", address: "456 Wholesale Ave, Osaka" }
+].map { |attrs| Wholesaler.create!(attrs) }
+
+# 見積もりの作成
+puts "📝 Creating quotations..."
+5.times do
+  quotation = Quotation.create!(
+    wholesaler: wholesalers.sample,
+    quotation_date: Date.today - rand(1..30),
+    status: ["pending", "approved", "rejected"].sample,
+    estimated_delivery: Date.today + rand(1..30),
+    wholesaler_remarks: "Sample remark",
+    notes: "Sample note"
+  )
+
+  # 見積もりアイテムの作成
+  3.times do
+    product = Product.all.sample
+    quotation_item = QuotationItem.create!(
+      quotation: quotation,
+      product: product,
+      quantity: rand(1..10),
+      estimated_price: rand(1000..5000)
+    )
+
+    # 見積もりアイテム変更の作成
+    QuotationItemChange.create!(
+      quotation_item: quotation_item,
+      original_part_number: product.oem_part_number,
+      new_part_number: "NEW#{SecureRandom.hex(4).upcase}",
+      change_date: Date.today,
+      change_reason: "Sample reason"
+    )
+  end
 end
 
 puts "✅ Seed data creation completed!"
