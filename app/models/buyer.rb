@@ -1,4 +1,5 @@
 class Buyer < ApplicationRecord
-  belongs_to :address
+  include Addressable
+  include Contactable
   has_many :orders
 end

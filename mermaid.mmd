@@ -1,236 +1,258 @@
 erDiagram
     Orders {
-        int id PK "Index"
-        string order_number "Unique order identifier"
-        date sale_date "Date the order is confirmed"
-        int channel_id FK
-        int user_id FK
-        int buyer_id FK
-        string order_status "Order status"
-        datetime created_at "Order creation date"
-        datetime updated_at "Order update date"
+        int id PK "インデックス"
+        string order_number "注文番号（一意）"
+        date sale_date "注文確定日"
+        int channel_id FK "販売チャネルID"
+        int user_id FK "ユーザーID"
+        int buyer_id FK "購入者ID"
+        string order_status "注文ステータス"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
-    OrderItems {
-        int id PK
-        int order_id FK
-        int sku_id FK
-        int quantity
-        decimal price
+    Order_sku_links {
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        int sku_id FK "SKUID"
+        int quantity "数量"
+        decimal price "価格"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     OrderStatusHistory {
-        int id PK
-        int order_id FK
-        string order_status
-        datetime status_change_date
-        string changed_by
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        string order_status "注文ステータス"
+        datetime status_change_date "ステータス変更日時"
+        string changed_by "変更者"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     SalesChannels {
-        int id PK
-        int order_id FK
-        string channel_name
-        string export_domestic_flag
+        int id PK "インデックス"
+        string channel_name "販売チャネル名"
+        string export_domestic_flag "国内/輸出フラグ"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     Buyers {
-        int id PK "Index"
-        string name
-        int address_id FK
-        string email
+        int id PK "インデックス"
+        string name "購入者名"
     }
 
     Addresses {
-        int id PK
-        string address_primary "Primary part of the address"
-        string address_secondary "Additional address information (optional)"
-        string city
-        string state_province
-        string postal_code
-        string country
-        string address_formats
+        int id PK "インデックス"
+        string address_primary "住所1"
+        string address_secondary "住所2（任意）"
+        string city "市区町村"
+        string state_province "都道府県"
+        string postal_code "郵便番号"
+        string country "国"
+        string address_formats "住所フォーマット"
+        int addressable_id "関連先ID"
+        string addressable_type "関連先タイプ"
+        boolean is_primary "プライマリー住所フラグ"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     SKUs {
-        int id PK "Index"
-        string sku_code
+        int id PK "インデックス"
+        string sku_code "SKUコード"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
-    SKU_PartNumber_Links {
-        int id PK
-        int sku_id FK
-        int product_id FK
+    Sku_Product_Links {
+        int id PK "インデックス"
+        int sku_id FK "SKUID"
+        int product_id FK "商品ID"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     Products {
-        int id PK "Index"
-        string oem_part_number "OEM part number"
-        bool is_oem "Indicates if it is an OEM part"
-        string domestic_title
-        string international_title
-        int product_categories_id FK "ProductCategory table foreign key"
-        string product_status "Product status"
-        datetime created_at "Product creation date"
-        datetime updated_at "Product update date"
-        int manufacturer_id FK "Manufacturer table foreign key"
+        int id PK "インデックス"
+        string oem_part_number "OEM品番"
+        bool is_oem "OEM製品フラグ"
+        string domestic_title "国内向け商品名"
+        string international_title "海外向け商品名"
+        int product_categories_id FK "商品カテゴリーID"
+        string product_status "商品ステータス"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
+        int manufacturer_id FK "メーカーID"
     }
 
     Manufacturers {
-        int id PK "Index"
-        string name "Manufacturer name"
-        string contact_info "Contact information"
+        int id PK "インデックス"
+        string name "メーカー名"
+        datetime created_at "作成日"
+        datetime updated_at "更新日時"
     }
 
     Inventories {
-        int id PK
-        int product_id FK "Index"
-        int quantity
-        date stock_order_date
-        string stock_type "Type of inventory (e.g., own, manufacturer, wholesaler)"
+        int id PK "インデックス"
+        int product_id FK "商品ID"
+        int quantity "在庫数"
+        date stock_order_date "発注日"
+        string stock_type "在庫タイプ"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     Product_categories {
-        int id PK "Index"
-        string category_name
-        string description
-        int parent_category_id FK "Self-referencing for subcategories"
+        int id PK "インデックス"
+        string category_name "カテゴリー名"
+        string description "説明"
+        int parent_category_id FK "親カテゴリーID（サブカテゴリー用）"
     }
 
     Shipments {
-        int id PK
-        int order_id FK
-        string carrier
-        string shipping_method
-        float weight
-        float length
-        float width
-        float height
-        string destination_country
-        string tracking_number
-        float customer_domestic_shipping
-        float customer_international_shipping
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        string carrier "配送業者"
+        string shipping_method "配送方法"
+        float weight "重量"
+        float length "長さ"
+        float width "幅"
+        float height "高さ"
+        string destination_country "配送先国"
+        string tracking_number "追跡番号"
+        float customer_domestic_shipping "国内配送料"
+        float customer_international_shipping "国際配送料"
     }
 
     Procurements {
-        int id PK
-        int order_id FK
-        decimal purchase_price
-        decimal domestic_transfer_fee
-        decimal forwarding_fee
-        decimal photo_fee
+        int id PK "インデックス"
+        int product_id FK "商品ID"
+        decimal purchase_price "仕入価格"
+        decimal domestic_transfer_fee "仕入国内転送料"
+        decimal forwarding_fee "発送拠点までの輸送料"
+        decimal photo_fee "写真撮影料"
     }
 
     Sales {
-        int id PK
-        int order_id FK
-        decimal price_original
-        string currency_code
-        decimal conversion_rate
-        decimal price_jpy
-        date conversion_date "Currency conversion date"
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        decimal price_original "販売価格"
+        int currency_id FK "通貨ID"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
 
 
     SalesChannelFees {
-        int id PK
-        int sales_channel_id FK
-        decimal fee_rate
+        int id PK "インデックス"
+        int sales_channel_id FK "販売チャネルID"
+        decimal fee_rate "手数料率"
     }
 
     PaymentFees {
-        int id PK
-        int order_id FK
-        string fee_type
-        decimal fee_rate "Fee rate (e.g., 0.03 for 3%)"
-        int option "Fee option"
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        int sales_channel_id FK "販売チャネルID"
+        string fee_category "手数料カテゴリー"
+        string fee_type "手数料タイプ"
+        decimal fee_amount "手数料金額"
+        int currency_id FK "通貨ID"
+        datetime fee_confirmed_at "手数料確定日時"
+        text note "備考"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     Expenses {
-        int id PK
-        int year
-        int month
-        string item_name
-        decimal amount
+        int id PK "インデックス"
+        int year "年"
+        int month "月"
+        string item_name "費目名"
+        decimal amount "金額"
     }
 
     AdvertisingCosts {
-        int id PK
-        int order_id FK
-        decimal product_ad_cost
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        decimal product_ad_cost "商品広告費"
     }
 
     Users {
-        int id PK
-        string name
-        string email
-        string password_digest
-        string profile_picture_url "Cloudinary URL for profile image"
-        string role "User role (e.g., admin, staff)"
+        int id PK "インデックス"
+        string name "ユーザー名"
+        string profile_picture_url "プロフィール画像URL"
+        string role "ユーザー権限"
+        string encrypted_password "暗号化パスワード"
+        string reset_password_token "パスワードリセットトークン"
+        datetime reset_password_sent_at "パスワードリセット送信日時"
+        datetime remember_created_at "ログイン記憶作成日時"
     }
 
     Remarks {
-        int id PK
-        int order_id FK
-        string partner_note
-        string internal_note
+        int id PK "インデックス"
+        int order_id FK "注文ID"
+        string partner_note "パートナー向け備考"
+        string internal_note "社内向け備考"
     }
 
     Quotations {
-        int id PK
-        int wholesaler_id FK "Wholesalers table foreign key"
-        date quotation_date
-        string status "Quotation status"
-        date estimated_delivery
-        text wholesaler_remarks "Remarks from wholesaler"
-        text notes
+        int id PK "インデックス"
+        int wholesaler_id FK "卸業者ID"
+        date quotation_date "見積日"
+        string status "見積ステータス"
+        date estimated_delivery "納期予定日"
+        text wholesaler_remarks "卸業者からの備考"
+        text notes "一般備考"
         datetime created_at
         datetime updated_at
     }
 
     Wholesalers {
-        int id PK
-        string name
-        string contact_info
-        string address
-        datetime created_at
-        datetime updated_at
+        int id PK "インデックス"
+        string name "卸業者名"
     }
 
     QuotationItems {
-        int id PK
-        int quotation_id FK
-        int product_id FK
-        int quantity
-        decimal estimated_price
-        datetime created_at
-        datetime updated_at
+        int id PK "インデックス"
+        int quotation_id FK "見積ID"
+        int product_id FK "商品ID"
+        int quantity "数量"
+        decimal estimated_price "見積価格"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     QuotationItemChanges {
-        int id PK
-        int quotation_item_id FK
-        string original_part_number
-        string new_part_number
-        datetime change_date
-        string change_reason
-        datetime created_at
-        datetime updated_at
+        int id PK "インデックス"
+        int quotation_item_id FK "見積明細ID"
+        string original_part_number "変更前品番"
+        string new_part_number "変更後品番"
+        datetime change_date "変更日時"
+        string change_reason "変更理由"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     SalesChannels ||--o{ Orders : "channel_id"
-    Orders ||--o{ OrderItems : "id"
-    OrderItems }o--|| SKUs : "sku_id"
+    Orders ||--o{ Order_sku_links : "id"
+    Order_sku_links }o--|| SKUs : "sku_id"
     Orders ||--o{ Remarks : "order_id"
     Users ||--o{ Orders : "user_id"
     Buyers ||--o{ Orders : "buyer_id"
-    Addresses ||--o{ Buyers : "address_id"
-    SKUs ||--o{ SKU_PartNumber_Links : "sku_id"
-    SKU_PartNumber_Links }o--|| Products : "product_id"
+    Users ||--o{ Addresses : "addressable"
+    Users ||--o{ ContactInformations : "contactable"
+    Buyers ||--o{ Addresses : "addressable"
+    Buyers ||--o{ ContactInformations : "contactable"
+    Wholesalers ||--o{ Addresses : "addressable"
+    Wholesalers ||--o{ ContactInformations : "contactable"
+    SKUs ||--o{ Sku_Product_Links : "sku_id"
+    Sku_Product_Links }o--|| Products : "product_id"
     Products ||--o{  Inventories: "product_id"
     Orders ||--o{ Shipments : "order_id"
-    Orders ||--o{ Procurements : "order_id"
     Orders ||--o{ Sales : "order_id"
     SalesChannels ||--o{ SalesChannelFees : "sales_channel_id"
     Orders ||--o{ PaymentFees : "order_id"
@@ -242,3 +264,31 @@ erDiagram
     QuotationItems ||--o{ QuotationItemChanges : "quotation_item_id"
     Orders ||--o{ OrderStatusHistory : "order_id"
     Manufacturers ||--o{ Products : "manufacturer_id"
+    Products ||--o{ Procurements : "product_id"
+
+    Currencies {
+        int id PK "インデックス"
+        string currency_code "通貨コード（例：JPY, USD）"
+        string currency_name "通貨名称"
+        string currency_symbol "通貨記号（例：¥, $）"
+        boolean is_active "有効/無効フラグ"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
+    }
+
+    Currencies ||--o{ Sales : "currency_id"
+    Currencies ||--o{ PaymentFees : "currency_id"
+
+    ContactInformations {
+        int id PK "インデックス"
+        int contactable_id "関連先ID"
+        string contactable_type "関連先タイプ"
+        string email "メールアドレス"
+        string phone "電話番号"
+        string fax "FAX番号"
+        string contact_person "担当者名"
+        text note "備考"
+        boolean is_primary "プライマリー連絡先フラグ"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
+    }
