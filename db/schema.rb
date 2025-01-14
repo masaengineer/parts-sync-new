@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_02_143042) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_12_081449) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -99,14 +99,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_02_143042) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
-    t.decimal "sku_net_amount", precision: 10, scale: 2
-    t.decimal "sku_gross_amount", precision: 10, scale: 2
     t.string "international_title"
     t.bigint "manufacturer_id"
     t.index ["manufacturer_id"], name: "index_skus_on_manufacturer_id"
     t.index ["sku_code"], name: "index_skus_on_sku_code"
-    t.index ["sku_gross_amount"], name: "index_skus_on_sku_gross_amount"
-    t.index ["sku_net_amount"], name: "index_skus_on_sku_net_amount"
   end
 
   create_table "users", force: :cascade do |t|

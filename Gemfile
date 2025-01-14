@@ -89,3 +89,6 @@ group :test do
 end
 
 gem "kaminari"
+
+gem 'oauth2'  # OAuth2認証用
+gem 'httparty'  # HTTP通信用
