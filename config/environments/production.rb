@@ -24,7 +24,7 @@ Rails.application.configure do
   # config.public_file_server.enabled = false
 
   # Compress CSS using a preprocessor.
-  config.assets.css_compressor = :sass
+  # config.assets.css_compressor = :sass
 
   # Do not fall back to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
@@ -69,7 +69,7 @@ Rails.application.configure do
   # "info" includes generic and useful information about system operation, but avoids logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII). If you
   # want to log everything, set the level to "debug".
-  config.log_level = :debug
+  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -110,10 +110,8 @@ Rails.application.configure do
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
 
-  # Enable Host Authorization
-  config.hosts << "parts-sync.site"
 
-  # 以下の設定を確認・追加
-  config.assets.digest = true
-  config.assets.js_compressor = :terser
+#   # 以下の設定を確認・追加
+#   config.assets.digest = true
+#   config.assets.js_compressor = :terser
 end
