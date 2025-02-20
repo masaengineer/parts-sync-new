@@ -1,6 +1,5 @@
 require 'sidekiq'
 require 'sidekiq-cron'
-require 'sidekiq/web'
 
 Sidekiq.configure_server do |config|
   config.redis = { url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/0') }
@@ -12,6 +11,3 @@ end
 Sidekiq.configure_client do |config|
   config.redis = { url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/0') }
 end
-
-# セッションの無効化
-Sidekiq::Web.set(:sessions, false) if defined?(Sidekiq::Web)
