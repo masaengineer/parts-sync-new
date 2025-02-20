@@ -2,15 +2,18 @@ module Ebay
   class OrderDataImportService
     def initialize(orders_data)
       @orders_data = orders_data
-      Rails.logger.info "🚀 Ebay::OrderDataImportService initialized with #{@orders_data['orders']&.size || 0} orders"
+      Rails.logger.info "🚀 Ebay::OrderDataImportService initialized with #{@orders_data[:orders]&.size || 0} orders"
     end
 
     def import(current_user)
       Rails.logger.info "📥 Starting import for user: #{current_user.email} (ID: #{current_user.id})"
       ApplicationRecord.transaction do
-        @orders_data['orders'].each do |ebay_order|
+        @orders_data[:orders].each do |ebay_order|
           import_order(ebay_order, current_user)
         end
+
+        # カラム名を新しいものに修正
+        current_user.update!(ebay_orders_last_synced_at: @orders_data[:last_synced_at])
       end
       Rails.logger.info "✅ Import completed successfully"
     rescue ActiveRecord::RecordInvalid => e

@@ -141,7 +141,6 @@ module Ebay
     end
 
     def process_non_sale_charge_transaction(order, transaction, logger)
-      # feeType の値をログに出力して確認
       logger.info("📌 Processing NON_SALE_CHARGE: feeType=#{transaction['feeType']}")
 
       unless transaction["feeType"] == "AD_FEE"
@@ -149,16 +148,27 @@ module Ebay
         return
       end
 
+      # 既存のレコードをチェック
+      existing_fee = PaymentFee.find_by(
+        transaction_id: transaction['transactionId'],
+        transaction_type: :non_sale_charge,
+        fee_category: transaction["feeType"]
+      )
+
+      if existing_fee
+        logger.info("⚠️ 既存の手数料レコードが見つかりました: ID=#{existing_fee.id}")
+        return
+      end
+
       amount = transaction.dig("amount", "value").to_d
-      # bookingEntry による符号反転は、PaymentFee 作成時に行う
       logger.info("💰 広告料金処理: #{amount}ドル - 注文番号: #{order.order_number}, bookingEntry=#{transaction['bookingEntry']}")
 
       payment_fee = PaymentFee.new(
         order: order,
         transaction_type: :non_sale_charge,
         fee_category: transaction["feeType"],
-        fee_amount: amount, # 一旦そのままの値を設定
-        transaction_id: transaction['transactionId'] # transaction_id を追加
+        fee_amount: amount,
+        transaction_id: transaction['transactionId']
       )
 
       # bookingEntry が CREDIT なら fee_amount を反転
@@ -169,6 +179,8 @@ module Ebay
       else
         logger.error("❌ 広告料金保存失敗: #{payment_fee.errors.full_messages}")
       end
+    rescue ActiveRecord::RecordNotUnique => e
+      logger.warn("⚠️ 重複する手数料レコードをスキップ: #{e.message}")
     end
 
     def process_refund_transaction(order, transaction, logger)
