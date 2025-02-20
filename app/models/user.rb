@@ -35,6 +35,8 @@ class User < ApplicationRecord
   validates :last_name, presence: true
   validates :first_name, presence: true
 
+  scope :with_ebay_account, -> { where.not(ebay_token: nil) }
+
   def self.from_omniauth(auth)
     # email から既存ユーザーを検索してみる
     user = User.find_by(email: auth.info.email)
