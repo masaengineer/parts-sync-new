@@ -1,9 +1,6 @@
 # == Route Map
 #
 
-require 'sidekiq/web'
-require 'sidekiq/cron/web'
-
 Rails.application.routes.draw do
   root to: "sales_reports#index"
 
@@ -28,8 +25,4 @@ Rails.application.routes.draw do
   # 静的ページのルーティング
   get "privacy_policy", to: "static_pages#privacy_policy"
   get "terms_of_service", to: "static_pages#terms_of_service"
-
-  authenticate :user do
-    mount Sidekiq::Web => '/sidekiq'
-  end
 end
