@@ -1,6 +1,6 @@
 <div class="card bg-base-100 mb-6">
   <div class="card-body p-5">
-    <%= search_form_for @q, url: sales_reports_path do |f| %>
+    <%= search_form_for @q, url: sales_reports_path, data: { controller: "form-submit" } do |f| %>
       <div class="flex flex-wrap items-end gap-3">
         <% search_form_fields.each do |field| %>
           <div class="w-[calc(16%-0.75rem)]">
@@ -11,7 +11,10 @@
           <%= link_to t("sales_reports.search.reset"), sales_reports_path, class: "btn btn-ghost btn-sm hover:btn-error w-full" %>
         </div>
         <div class="w-[calc(10%-0.75rem)]">
-          <%= f.submit t("sales_reports.search.submit"), class: "btn btn-primary btn-sm w-full" %>
+          <%= f.button type: "submit", class: "btn btn-primary btn-sm w-full", data: { action: "click->form-submit#submit" } do %>
+            <span data-form-submit-target="buttonText"><%= t("sales_reports.search.submit") %></span>
+            <span data-form-submit-target="spinner" class="loading loading-spinner loading-sm hidden"></span>
+          <% end %>
         </div>
       </div>
     <% end %>

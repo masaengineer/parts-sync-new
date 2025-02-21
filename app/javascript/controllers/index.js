@@ -1,9 +1,15 @@
 // Import and register all your controllers from the importmap under controllers/*
 
-import ThemeController from './theme_controller';
+import FormSubmitController from './form_submit_controller';
 import ChartController from './chart_controller';
+import ThemeController from './theme_controller';
+import FlashController from './flash_controller';
+import PasswordFieldController from './password_field_controller';
 
 export function registerControllers(application) {
-  application.register('theme', ThemeController);
+  application.register('form-submit', FormSubmitController);
   application.register('chart', ChartController);
+  application.register('theme', ThemeController);
+  application.register('flash', FlashController);
+  application.register('password-field', PasswordFieldController);
 }
