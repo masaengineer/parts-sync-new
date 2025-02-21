@@ -7,7 +7,7 @@ class PlreportsController < ApplicationController
     # 指定年の注文を取得
     orders = Order.where("extract(year from sale_date) = ?", year)
                   .includes(
-                    :sale,
+                    :sales,
                     :shipment,
                     :payment_fees,
                     :procurement,
