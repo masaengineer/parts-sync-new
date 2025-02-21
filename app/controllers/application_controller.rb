@@ -22,13 +22,13 @@ class ApplicationController < ActionController::Base
   private
 
   def skip_authentication?
-    # 1. 静的ページ
+    # 静的ページ
     return true if controller_name == 'static_pages'
 
-    # 2. デバイス関連のページ
+    # デバイス関連のページ
     return true if devise_controller?
 
-    # 3. SNSクローラーからのアクセス
+    # SNSクローラーからのアクセス
     return true if crawler?
 
     false
@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
       'Googlebot',
       'bingbot'
     ]
-    
+
     crawler_user_agents.any? { |bot| request.user_agent&.include?(bot) }
   end
 
