@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   layout :layout_by_resource
   before_action :configure_permitted_parameters, if: :devise_controller?
-  # before_action :authenticate_user!
+  before_action :authenticate_user!, unless: :public_page?
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -20,6 +20,19 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def public_page?
+    # 1. 静的ページ
+    return true if controller_name == 'static_pages'
+
+    # 2. OGPプレビューページ
+    return true if controller_name == 'previews' && action_name == 'show'
+
+    # 3. デバイス関連のパブリックページ
+    return true if devise_controller? && ['sessions', 'registrations', 'passwords'].include?(controller_name)
+
+    false
+  end
 
   def layout_by_resource
     if devise_controller?
