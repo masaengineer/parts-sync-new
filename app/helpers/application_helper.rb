@@ -7,19 +7,11 @@ module ApplicationHelper
   end
 
   def default_meta_tags
-    # デバッグ出力を先に実行
-    ogp_image_url = image_url("ogp.png")
-    Rails.logger.info "==== OGP Debug ===="
-    Rails.logger.info "Asset Host: #{ActionController::Base.asset_host}"
-    Rails.logger.info "OGP Image URL: #{ogp_image_url}"
-    Rails.logger.info "Request URL: #{request.original_url}"
-
-    # メタタグの設定を返す
     {
       site: "Parts Sync",
       title: "カーパーツ売上管理システム",
       charset: "utf-8",
-      description: "カーパーツ売上管理システム",
+      description: "カーパーツ売上管理システムで、効率的な在庫管理と売上分析を実現",
       keywords: "カーパーツ,売上管理,システム",
       canonical: request.original_url,
       separator: "|",
@@ -28,9 +20,9 @@ module ApplicationHelper
         { href: image_url("logo/favicon.png"), rel: "icon", sizes: "90x90", type: "image/png" }
       ],
       og: {
-        site_name: "Parts Sync",
-        title: "カーパーツ売上管理システム",
-        description: "カーパーツ売上管理システム",
+        site_name: :site,
+        title: :title,
+        description: :description,
         type: "website",
         url: request.original_url,
         image: image_url("ogp.png"),

@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   layout :layout_by_resource
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :authenticate_user!, unless: :public_page?
+  before_action :authenticate_user!, unless: :skip_authentication?
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
@@ -21,17 +21,35 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def public_page?
+  def skip_authentication?
     # 1. 静的ページ
     return true if controller_name == 'static_pages'
 
-    # 2. OGPプレビューページ
-    return true if controller_name == 'previews' && action_name == 'show'
+    # 2. デバイス関連のページ
+    return true if devise_controller?
 
-    # 3. デバイス関連のパブリックページ
-    return true if devise_controller? && ['sessions', 'registrations', 'passwords'].include?(controller_name)
+    # 3. SNSクローラーからのアクセス
+    return true if crawler?
 
     false
+  end
+
+  def crawler?
+    # 主要なSNSクローラーのUser-Agentをチェック
+    crawler_user_agents = [
+      'Twitterbot',
+      'facebookexternalhit',
+      'LinkedInBot',
+      'line-poker',
+      'Slackbot',
+      'Discordbot',
+      'WhatsApp',
+      'Slack-ImgProxy',
+      'Googlebot',
+      'bingbot'
+    ]
+    
+    crawler_user_agents.any? { |bot| request.user_agent&.include?(bot) }
   end
 
   def layout_by_resource
